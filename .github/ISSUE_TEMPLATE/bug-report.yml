@@ -1,0 +1,57 @@
+name: "Bug Report"
+description: "Open an issue for a bug in ephers"
+title: "Add Bug Title Here"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to report an issue. This form is for reporting **bugs within ephers**.
+
+        If you are **new to ephers** or **uncertain** whether this is a bug in ephers, a bug in another framework or a bug in your own code, please [start a discussion](https://github.com/cels-teknologi/php-ephers/discussions) first.
+  - type: input
+    id: version
+    attributes:
+      label: ephers version
+      description: What version of ethers are you using? Before opening an issue, please make sure you are up to date.
+      placeholder: major.minor.revision
+    validations:
+      required: true
+  - type: textarea
+    id: describe-the-issue
+    attributes:
+      label: Describe your issue
+      description: Briefly describe the issue you encountered and what you expected to happen.
+      placeholder: What happened?
+    validations:
+      required: true 
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      description: In what environment, platforms or frameworks are you using that the issue occured on? Select all that apply.
+      multiple: true
+      options:
+        - Ethereum (mainnet/ropsten/rinkeby/goerli/sepolia)
+        - Altcoin - Please specify (e.g. Polygon)
+        - Geth
+        - Laravel
+        - Symfony
+        - CodeIgniter
+        - Other (please specify)
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this bug?
+      options:
+        - Low
+        - Medium
+        - High
+        - Critical
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information (optional)
+      description: Please provide any additional information that might be helpful (e.g., screenshots, logs).
+      placeholder: Anything else to know?
