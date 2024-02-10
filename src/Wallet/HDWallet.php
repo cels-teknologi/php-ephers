@@ -68,7 +68,7 @@ function ser_I(
  */
 class HDWallet extends Wallet
 {
-    public const DEFAULT_DERIVATION_PATH = "m/44'/60'/0'/0/0";
+    public const DEFAULT_DERIVATION_PATH = "m/44'/0'/0'/0/0";
     protected const MASTER_SECRET = 'Bitcoin seed';
     public const HARDENED_BIT = 0x80000000;
     public const SECP256K1_N = '0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141';
