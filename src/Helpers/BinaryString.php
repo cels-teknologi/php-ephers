@@ -29,6 +29,55 @@ final readonly class BinaryString implements \JsonSerializable, \Stringable
     protected function __construct(protected string $str) { }
 
     /**
+     * Gets the byte-representation at specified `$position`.
+     * 
+     * @param  int  $pos
+     * @return  int
+     * @throws  \InvalidArgumentException  When given `$pos` is invalid.
+     */
+    public function at(int $pos): int
+    {
+        if ($pos < 0 || $pos >= $this->len()) {
+            throw new \InvalidArgumentException('Invalid position');
+        }
+
+        return \ord($this->str[$pos]);
+    }
+
+    /**
+     * Compares the hex-representation of `BinaryString $this` and `$other`.
+     * 
+     * Under the hood, this calls PHP native `strcmp`. This function returns
+     * -1 if `$this` < `$other`, 1 if `$this` > `$other`, 0 if both are equal.
+     * 
+     * @param  self  $other
+     * @return  int
+     */
+    public function compare(BinaryString $other): int
+    {
+        $res = \strcmp($this->toHex(), $other->toHex());
+
+        /**
+         * Prior to PHP 8.2, `strcmp()` returns unbounded numbers.
+         * 
+         * So we clamp it within [-1, 1] by dividing the number with
+         * absolute of itself **IF AND ONLY IF** it is not zero.
+         */
+        return $res === 0 ? 0 : \floor($res / \abs($res));
+    }
+
+    /**
+     * Appends `$other` to the end of `BinaryString $this`.
+     * 
+     * @param  self  $other
+     * @return  self
+     */
+    public function concat(BinaryString $other): self
+    {
+        return new self($this->str . $other->raw());
+    }
+
+    /**
      * Gets the length of string (aka. the length of `Uint8Array`).
      * 
      * This method is an alias of `len`.
@@ -173,7 +222,7 @@ final readonly class BinaryString implements \JsonSerializable, \Stringable
     }
 
     /**
-     * Creates a new `BinaryString` from native PHP binary `string`.
+     * Creates a new `BinaryString` from `string` of hex.
      * 
      * @static
      * @param  string  $str  The binary string.
@@ -182,15 +231,19 @@ final readonly class BinaryString implements \JsonSerializable, \Stringable
      */
     public static function fromHex(string $hex): self
     {
-        $bin = \hex2bin(\preg_replace(
+        $hex = \preg_replace(
             pattern: '/^0x/',
             replacement: '',
             subject: $hex,
             limit: 1,
-        ));
+        );
+        if (\strlen($hex) % 2 === 1) {
+            $hex = "0{$hex}";
+        }
+        $bin = \hex2bin($hex);
         if (!$bin) {
             throw new \InvalidArgumentException(
-                'Argument `$hex` contains invalid hexadecimal byte.'
+                'Argument `$hex` contains invalid hexadecimal byte: ' . $hex
             );
         }
 

@@ -11,7 +11,6 @@ namespace Ephers\Wallet;
 use Ephers\Helpers\BinaryString;
 use Ephers\Wordlists\English;
 use Ephers\Wordlists\Wordlist;
-use Exception;
 use JsonSerializable;
 use Normalizer;
 
@@ -74,10 +73,13 @@ class Mnemonic implements JsonSerializable
         $words = $wordlist->split($mnemonic);
 
         if (\count($words) % 3 > 0 || \count($words) < 12 || \count($words) > 24) {
-            throw new Exception('Invalid mnemonic length');
+            throw new \InvalidArgumentException('Invalid mnemonic length');
         }
 
-        $entropy = [];
+        $entropy = \array_map(
+            fn ($_) => 0,
+            range(1, \ceil(11 * \count($words) / 8)),
+        );
         $offset = 0;
         for ($i = 0; $i < \count($words); $i++) {
             $index = $wordlist->getWordIndex(Normalizer::normalize(
@@ -86,7 +88,7 @@ class Mnemonic implements JsonSerializable
             ));
 
             if (!$index) {
-                throw new Exception("Invalid mnemonic word at index {$i}");
+                throw new \InvalidArgumentException("Invalid mnemonic word at index {$i}");
             }
 
             for ($bit = 0; $bit < 11; $bit++) {
@@ -112,7 +114,7 @@ class Mnemonic implements JsonSerializable
         $checksum = \array_values(\unpack('C*', $hash))[0] & $checksumMask;
 
         if ($checksum !== $entropy[\count($entropy) - 1]) {
-            throw new Exception('Invalid mnemonic checksum' . json_encode($mnemonic));
+            throw new \InvalidArgumentException('Invalid mnemonic checksum');
         }
 
         return BinaryString::fromBytes(\array_slice($entropy, 0, $entropyBits / 8));
@@ -128,7 +130,7 @@ class Mnemonic implements JsonSerializable
             || \count($entropy) < 16
             || \count($entropy) > 32
         ) {
-            throw new Exception('Invalid entropy size');
+            throw new \InvalidArgumentException('Invalid entropy size');
         }
 
         $wordlist = $wl ?? new English;
