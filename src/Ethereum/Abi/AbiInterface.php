@@ -119,15 +119,16 @@ final class AbiInterface
         FunctionFragment $fragment,
         array $values
     ): string {
-        // if (typeof(fragment) === "string") {
-        //     const f = this.getFunction(fragment);
-        //     assertArgument(f, "unknown function", "fragment", fragment);
-        //     fragment = f;
-        // }
+        return $fragment->selector()->concat(
+            $this->encodeParams($fragment->inputs, $values),
+        );
+    }
 
-        // $encoded = \array_map()
-        // return $fragment->selector->concat();
-        return '';
+    protected function encodeParams(array $inputs, array $values): BinaryString
+    {
+        // return \implode(\array_map(
+        //     fn
+        // ))
     }
 
     public static function from($value): self

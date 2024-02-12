@@ -179,13 +179,14 @@ final readonly class BinaryString implements \JsonSerializable, \Stringable
     }
 
     /**
-     * Representation in lowercase hexadecimal format `0x...`.
+     * Representation in lowercase hexadecimal format.
      * 
+     * @param  string  $prefix  The prefix, e.g. `0x...`.
      * @return  string
      */
-    public function toHex(): string
+    public function toHex(string $prefix = '0x'): string
     {
-        return '0x' . \bin2hex($this->str);
+        return $prefix . \bin2hex($this->str);
     }
 
     /**
