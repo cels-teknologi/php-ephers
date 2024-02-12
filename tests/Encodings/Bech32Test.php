@@ -1,5 +1,7 @@
 <?php
 
+namespace Ephers\Test\Encodings;
+
 use Ephers\Encodings\Bech32;
 use PHPUnit\Framework\TestCase;
 

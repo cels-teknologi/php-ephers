@@ -1,5 +1,7 @@
 <?php
 
+namespace Ephers\Test\Encodings;
+
 use Ephers\Encodings\Base58;
 use Ephers\Helpers\BinaryString;
 use PHPUnit\Framework\TestCase;

@@ -1,5 +1,7 @@
 <?php
 
+namespace Ephers\Test;
+
 use Ephers\Wallet\DerivationPath;
 use Ephers\Wallet\HDWallet;
 use Ephers\Wallet\Mnemonic;

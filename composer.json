@@ -20,7 +20,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Ephers\\Tests": "tests/"
+      "Ephers\\Tests\\": "tests/"
     }
   },
   "license": "MIT",

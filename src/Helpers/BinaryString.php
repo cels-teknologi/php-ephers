@@ -251,6 +251,34 @@ final readonly class BinaryString implements \JsonSerializable, \Stringable
     }
 
     /**
+     * Checks whether a given string is hexits.
+     * 
+     * @static
+     * @param  string  $str
+     * @return  bool
+     */
+    public static function isHex(string $str, bool|int $bytesLen = false): bool
+    {
+        $isHex = $str && (bool) \preg_match(
+            pattern: '/^(0x)?[0-9A-Fa-f]*$/',
+            subject: $str,
+        );
+
+        if (\is_bool($bytesLen) && !$bytesLen) {
+            return $isHex;
+        }
+
+        return $isHex && match(\is_bool($bytesLen)) {
+            true => \strlen($str) % 2 === 0,
+            false => \strlen($str) / 2 === $bytesLen + (
+                \str_starts_with($str, '0x')
+                    ? 1
+                    : 0
+            ),
+        };
+    }
+
+    /**
      * Creates a new `BinaryString` from native PHP binary `string`.
      * 
      * @static
