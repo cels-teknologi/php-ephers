@@ -13,7 +13,7 @@ abstract class Provider
     {
         return $this->_send([
             'method' => $method,
-            'parmas' => $params,
+            'params' => $params,
         ]);
     }
 

@@ -49,7 +49,7 @@ final class Contract
 
     public function __call(string $name, array $args)
     {
-        $this->getContractMethod($name, $args ?? [])();
+        return $this->getContractMethod($name, $args ?? [])();
     }
 
     public function __get(string $name)

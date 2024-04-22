@@ -21,11 +21,11 @@ final class ParamType
     ) {
         if ($baseType === 'array') {
             if ($length === null || !$children) {
-                throw new \InvalidArgumentException();
+                throw new \InvalidArgumentException('Array types must specify length & children');
             }
         }
         else if ($length !== null || $children) {
-            throw new \InvalidArgumentException();
+            throw new \InvalidArgumentException('Non-array types must not have length & children');
         }
 
         if ($baseType === 'tuple') {

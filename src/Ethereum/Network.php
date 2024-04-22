@@ -2,12 +2,24 @@
 
 namespace Ephers\Ethereum;
 
-class Network
+enum Network: int
 {
-    public function __construct(
-        public string $name,
-        public \GMP $chainId,
-    ) {}
+    case Unknown = 0;
+    case Mainnet = 1;
+    case Ropsten = 3;
+    case Rinkeby = 4;
+    case Goerli = 5;
+    case Kovan = 42;
+    case Holesky = 17000;
+    case Sepolia = 11155111;
+    case Arbitrum = 42161;
+    case ArbitrumGoerli = 421613;
+    case ArbitrumSepolia = 421614;
+    case Base = 8453;
+    case BaseGoerli = 84531;
+    case BaseSepolia = 84532;
+    case BNB = 56;
+    case BNBt = 97;
 
     public function matches($other): bool
     {
@@ -16,19 +28,20 @@ class Network
         }
 
         if ($other instanceof Network) {
-            return \gmp_cmp($this->chainId, $other->chainId) === 0;
+            return $other === $this; //\gmp_cmp($this->chainId, $other->chainId) === 0;
         }
 
         if ($other instanceof \GMP) {
-            return \gmp_cmp($this->chainId, $other) === 0;
+            return \gmp_cmp($this->asGmp(), $other) === 0;
+        }
+
+        if (\is_int($other)) {
+            return $this->value === $other;
         }
 
         if (\is_string($other)) {
             try {
-                return \gmp_cmp(
-                    $this->chainId,
-                    \gmp_init($other, 10),
-                ) === 0;
+                return $this->matches(\gmp_init($other, 10));
             }
             catch (\Throwable $t) { }
 
@@ -38,37 +51,43 @@ class Network
         return false;
     }
 
-    public static function from($network): self
+    public function asGmp(): \GMP
+    {
+        return \gmp_init($this->value, 10);
+    }
+
+    public static function guess($network): self
     {
         if (!$network) {
-            return self::from('mainnet');
+            return Network::Mainnet;
         }
 
         if ($network instanceof \GMP) {
             $network = (int) \gmp_strval($network, 10);
         }
+        
+        if (\is_string($network)) {
+            $network = \mb_strtolower($network);
+        }
 
-        return new self(...(match ($network) {
-            'mainnet', 1 => ['mainnet', \gmp_init(1, 10)],
-            'ropsten', 3 => ['ropsten', \gmp_init(3, 10)],
-            'rinkeby', 4 => ['rinkeby', \gmp_init(4, 10)],
-            'goerli', 5 => ['goerli', \gmp_init(5, 10)],
-            'kovan', 42 => ['kovan', \gmp_init(42, 10)],
-            'holesky', 17000 => ['holesky', \gmp_init(17000, 10)],
-            'sepolia', 11155111 => ['sepolia', \gmp_init(11155111, 10)],
-
-            'arbitrum', 42161 => ['arbitrum', \gmp_init(42161, 10)],
-            'arbitrum-goerli', 421613 => ['arbitrum-goerli', \gmp_init(421613, 10)],
-            'arbitrum-sepolia', 421614 => ['arbitrum-sepolia', \gmp_init(421614, 10)],
-
-            'base', 8453 => ['base', \gmp_init(8453, 10)],
-            'base-goerli', 84531 => ['base-goerli', \gmp_init(84531, 10)],
-            'base-sepolia', 84532 => ['base-sepolia', \gmp_init(84532, 10)],
-
-            'bnb', 56 => ['bnb', \gmp_init(42161, 10)],
-            'bnbt', 97 => ['arbitrum', \gmp_init(42161, 10)],
+        return match ($network) {
+            'mainnet', 1 => self::Mainnet,
+            'ropsten', 3 => self::Ropsten,
+            'rinkeby', 4 => self::Rinkeby,
+            'goerli', 5 => self::Goerli,
+            'kovan', 42 => self::Kovan,
+            'holesky', 17000 => self::Holesky,
+            'sepolia', 11155111 => self::Sepolia,
+            'arbitrum', 42161 => self::Arbitrum,
+            'arbitrum-goerli', 421613 => self::ArbitrumGoerli,
+            'arbitrum-sepolia', 421614 => self::ArbitrumSepolia,
+            'base', 8453 => self::Base,
+            'base-goerli', 84531 => self::BaseGoerli,
+            'base-sepolia', 84532 => self::BaseSepolia,
+            'bnb', 56 => self::BNB,
+            'bnbt', 97 => self::BNBt,
 
             default => ['unknown', \gmp_init(0, 10)],
-        }));
+        };
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Ephers\Ethereum\Abi;
 
+use Ephers\Ethereum\Abi\Encoder\Encoder;
 use Ephers\Ethereum\Abi\Enums\FormatType;
 use Ephers\Ethereum\Abi\Enums\FragmentType;
 use Ephers\Ethereum\Abi\Fragments\ConstructorFragment;
@@ -124,8 +125,16 @@ final class AbiInterface
         );
     }
 
-    protected function encodeParams(array $inputs, array $values): BinaryString
+    protected function encodeParams(array $types, array $values): BinaryString
     {
+        if (\count($types) !== \count($values)) {
+            throw new \InvalidArgumentException('Types & values mismatch');
+        }
+
+        return Encoder::encode(
+            new ParamType('_', 'tuple', 'tuple', components: $types),
+            $values,
+        );
         // return \implode(\array_map(
         //     fn
         // ))
