@@ -44,7 +44,7 @@ final class Secp256k1
             default => null, //[\gmp_init(0, 10), \gmp_init(0, 10)],
         };
         if (!$coords) {
-            throw new \Exception($hex);
+            throw new \Exception("Invalid hex string {$hex}");
         }
         return $g->getPublicKeyFrom(...$coords)->getPoint();
     }
