@@ -43,13 +43,14 @@ class JsonRpcProvider extends Provider
         $request = new Request('POST', $this->url, body: $body);
         $response = \json_decode(
             (clone $this->client)->send($request)->getBody()->getContents(),
+            associative: true,
             flags: JSON_BIGINT_AS_STRING | JSON_THROW_ON_ERROR,
         );
 
-        if (\property_exists($response, 'error')) {
-            throw new JsonRpcException($response->error);
+        if (\array_key_exists('error', $response)) {
+            throw new JsonRpcException($response['error']);
         }
 
-        return \property_exists($response, 'result') ? $response->result : null;
+        return \array_key_exists('result', $response) ? $response['result'] : null;
     }
 }

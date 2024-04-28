@@ -29,7 +29,7 @@ final class ParamType
         }
 
         if ($baseType === 'tuple') {
-            if (!$components) {
+            if (! \is_array($components)) {
                 throw new \InvalidArgumentException();
             }
         }

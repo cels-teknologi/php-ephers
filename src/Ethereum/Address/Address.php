@@ -18,4 +18,10 @@ class Address
             ),
         )->split(-20);
     }
+
+    public static function validate(BinaryString $address): bool
+    {
+        // TODO: 
+        return true;
+    }
 }

@@ -2,7 +2,8 @@
 
 namespace Ephers\Ethereum\Abi;
 
-use Ephers\Ethereum\Abi\Encoder\Encoder;
+use Ephers\Ethereum\Abi\Coder\Encoder;
+use Ephers\Ethereum\Abi\Coder\Writer;
 use Ephers\Ethereum\Abi\Enums\FormatType;
 use Ephers\Ethereum\Abi\Enums\FragmentType;
 use Ephers\Ethereum\Abi\Fragments\ConstructorFragment;
@@ -131,10 +132,13 @@ final class AbiInterface
             throw new \InvalidArgumentException('Types & values mismatch');
         }
 
-        return Encoder::encode(
-            new ParamType('_', 'tuple', 'tuple', components: $types),
+        $writer = new Writer;
+        Encoder::encode(
+            $writer,
+            new ParamType('_', 'tuple', 'tuple', components: \count($types) > 0 ? $types : []),
             $values,
         );
+        return $writer->data();
         // return \implode(\array_map(
         //     fn
         // ))

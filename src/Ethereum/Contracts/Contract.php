@@ -33,7 +33,7 @@ final class Contract
         if (!$fragment) {
             throw new \BadMethodCallException();
         }
-        
+
         return new ContractMethod(
             $this,
             $name,
